@@ -1,4 +1,4 @@
-package com.godeltech.mastery.task.rest;
+package com.java.mastery.task.rest;
 
 public class EmployeeControllerTest {
 }

@@ -1,4 +1,4 @@
-package com.godeltech.mastery.task.dto;
+package com.java.mastery.task.dto;
 
 public enum Gender {
     MALE,
