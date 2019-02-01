@@ -1,4 +1,4 @@
-package com.java.mastery.task.dto;
+package com.mastery.java.task.dto;
 
 public class Employee {
     private Long employeeId;
