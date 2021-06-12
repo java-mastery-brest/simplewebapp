@@ -12,9 +12,7 @@ public class EmployeeService {
 
     @Autowired
     EmployeeDao employeeDao;
-    public Employee findById (Integer id){
-        return employeeDao.findById(id);
-    }
+    public Employee findById (Integer id){ return employeeDao.findById(id); }
 
     public List<Employee> findAll (){ return employeeDao.findAll();}
 
@@ -22,11 +20,11 @@ public class EmployeeService {
 
     public List<Employee> findByDepartmentId(Integer departmentId) { return employeeDao.findByDepartmentId(departmentId);}
 
-    public void deleteEmployee(String lastname) { employeeDao.deleteEmployee(lastname);}
+    public void deleteEmployee(Integer id) { employeeDao.deleteEmployee(id);}
 
     public void newEmployee(Employee newEmployee) { employeeDao.newEmployee(newEmployee); }
 
-    public void updateEmployee(Employee employee, String lastname) { employeeDao.updateEmployee(employee, lastname);
+    public void updateEmployee(Employee employee, Integer id) { employeeDao.updateEmployee(employee, id);
     }
 }
 

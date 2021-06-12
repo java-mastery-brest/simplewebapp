@@ -23,28 +23,29 @@ public class EmployeeController {
     @GetMapping()
     public List<Employee> findAll (){return  employeeService.findAll();}
 
-    @GetMapping("/department/{departmentid}")
-    public List<Employee> findByDepartmentId(@PathVariable Integer departmentid) {
-        return employeeService.findByDepartmentId(departmentid);
+    @GetMapping("/department/{departmentId}")
+    public List<Employee> findByDepartmentId(@PathVariable Integer departmentId) {
+        return employeeService.findByDepartmentId(departmentId);
     }
 
     @GetMapping("/lastname/{lastname}")
     public Employee findByLastname (@PathVariable String lastname){return employeeService.findByLastname(lastname);}
 
-    @DeleteMapping("/lastname/{lastname}")
-    public void deleteEmployee (@PathVariable String lastname){employeeService.deleteEmployee(lastname);}
+    @DeleteMapping("/{id}")
+    public void deleteEmployee (@PathVariable Integer id){employeeService.deleteEmployee(id);}
 
     @PostMapping()
     public void newEmployee (@RequestBody Employee newEmployee){ employeeService.newEmployee(newEmployee);}
 
-    @PutMapping("/lastname/{lastname}")
-    public void updateEmployee (@RequestBody Employee updatedEmployee, @PathVariable String lastname){
-        Employee employee = employeeService.findByLastname(lastname);
-        employee.setEmployeeId(updatedEmployee.getEmployeeId());
+    @PutMapping("/{id}")
+    public void updateEmployee (@RequestBody Employee updatedEmployee, @PathVariable Integer id){
+        Employee employee = employeeService.findById(id);
         employee.setDepartmentId(updatedEmployee.getDepartmentId());
         employee.setJobTitle(updatedEmployee.getJobTitle());
-        employeeService.updateEmployee(employee, lastname);
-
+        employee.setFirstName(updatedEmployee.getFirstName());
+        employee.setLastName(updatedEmployee.getLastName());
+        employee.setGender(updatedEmployee.getGender());
+        employee.setDateOfBirth(updatedEmployee.getDateOfBirth());
+        employeeService.updateEmployee(employee, id);
     }
-
 }
