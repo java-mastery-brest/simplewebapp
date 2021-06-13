@@ -1,10 +1,10 @@
 package com.mastery.java.task.dao;
 
-import com.mastery.java.task.config.DataBaseHandler;
 import com.mastery.java.task.dto.Employee;
 import com.mastery.java.task.dto.Gender;
-import org.apache.tomcat.jni.Local;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -12,7 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,121 +22,104 @@ import static com.mastery.java.task.dto.Gender.MALE;
 @Component
 public class EmployeeDao {
 
-    private DataBaseHandler dataBaseHandler = new DataBaseHandler();
+
+    @Autowired
+    JdbcTemplate jdbc;
 
 
-    public Employee findById (Integer id) {
-        try (Connection connection = dataBaseHandler.getDbCon()) {
-            PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM employee WHERE employee_id = ?");
-            selectStatement.setInt(1, id);
-            ResultSet resultSet = selectStatement.executeQuery();
-            Employee employee = null;
-            while (resultSet.next()){
-                employee = getResultEmployee(resultSet);
+    public Employee findById(Integer id){
+        String query="SELECT * FROM employee WHERE employee_id = ?";
+        final Employee[] employee = new Employee[1];
+        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+            @Override
+            public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
+                ps.setInt(1, id);
+                ResultSet resultSet = ps.executeQuery();
+                while (resultSet.next()) {
+                    employee[0] = getResultEmployee(resultSet);
+                }
+                return  null;
             }
-            selectStatement.close();
-            return employee;
-        }catch (SQLException | ClassNotFoundException e){
-            e.printStackTrace();
-        }
-        return null;
+        });
+        return employee[0];
     }
 
 
-    public List<Employee> findAll() {
-        try (Connection connection = dataBaseHandler.getDbCon()) {
-            PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM employee ");
-            ResultSet resultSet = selectStatement.executeQuery();
-            Employee employee = null;
-            List <Employee> list= new ArrayList<Employee>();
-            while (resultSet.next()) {
-                employee = getResultEmployee(resultSet);
-                list.add(employee);
+    public List<Employee> findAll(){
+        String query="SELECT * FROM employee ";
+        List<Employee> list = new ArrayList<>();
+        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+            @Override
+            public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
+                ResultSet resultSet = ps.executeQuery();
+                Employee employee = null;
+                while (resultSet.next()) {
+                    list.add(getResultEmployee(resultSet));
+                }
+                return  null;
             }
-            selectStatement.close();
-            return list;
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        });
+        return list;
     }
 
 
-    public Employee findByLastname(String lastname) {
-        try (Connection connection = dataBaseHandler.getDbCon()) {
-            PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM employee WHERE last_name = ?");
-            selectStatement.setString(1, lastname);
-            ResultSet resultSet = selectStatement.executeQuery();
-            Employee employee = null;
-            while (resultSet.next()){
-                employee = getResultEmployee(resultSet);
+    public List<Employee> findByDepartmentId(Integer departmentId){
+        String query="SELECT * FROM employee WHERE department_id = ?";
+        List<Employee> list = new ArrayList<>();
+        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+            @Override
+            public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
+                ps.setInt(1, departmentId);
+                ResultSet resultSet = ps.executeQuery();
+                Employee employee = null;
+                while (resultSet.next()) {
+                   list.add(getResultEmployee(resultSet));
+                }
+                return  null;
             }
-            selectStatement.close();
-            return employee;
-        }catch (SQLException | ClassNotFoundException e){
-            e.printStackTrace();
-        }
-        return null;
-
+        });
+        return list;
     }
 
 
-    public List<Employee> findByDepartmentId(Integer departmentId) {
-        try (Connection connection = dataBaseHandler.getDbCon()) {
-            PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM employee WHERE department_id = ?");
-            selectStatement.setInt(1, departmentId);
-            ResultSet resultSet = selectStatement.executeQuery();
-            Employee employee = null;
-            List <Employee> list= new ArrayList<Employee>();
-            while (resultSet.next()) {
-                employee = getResultEmployee(resultSet);
-                list.add(employee);
+    public void deleteEmployee (Integer id){
+        String query= "DELETE FROM employee WHERE employee_id = ?";
+        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+            @Override
+            public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
+                ps.setInt(1, id);
+                return ps.execute();
             }
-            selectStatement.close();
-            return list;
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        });
+        System.out.println("Data deleted successfully");
     }
 
 
-    public void deleteEmployee(Integer id) {
-        try (Connection connection = dataBaseHandler.getDbCon()) {
-            PreparedStatement selectStatement = connection.prepareStatement("DELETE FROM employee WHERE employee_id = ?");
-            selectStatement.setInt(1, id);
-            selectStatement.executeUpdate();
-            selectStatement.close();
-        }catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    public void newEmployee(Employee newEmployee){
+        String query="INSERT INTO employee ( first_name, last_name, department_id, job_title, gender, date_of_birth) VALUES ( ?, ?, ?, ?, ?, ?)";
+        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+            @Override
+            public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
+                setParametersForEmployee(newEmployee, ps);
+
+                return ps.execute();
+            }
+        });
+        System.out.println("Data inserted Successfully");
     }
 
 
-    public void newEmployee(Employee newEmployee) {
-        try (Connection connection = dataBaseHandler.getDbCon()) {
-            PreparedStatement selectStatement = connection.prepareStatement("INSERT INTO employee ( first_name, last_name, department_id, job_title, gender, date_of_birth) " +
-                    "VALUES ( ?, ?, ?, ?, ?, ?)");
-            setParametersForEmployee(newEmployee, selectStatement);
-            selectStatement.executeUpdate();
-            selectStatement.close();
-        }catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void updateEmployee(Employee employee, Integer id) {
-        try (Connection connection = dataBaseHandler.getDbCon()) {
-            PreparedStatement selectStatement = connection.prepareStatement(
-                    "UPDATE employee SET  first_name = ?, last_name = ?, department_id = ?, job_title = ?, gender = ?, date_of_birth = ?  " +
-                            "WHERE employee_id = ?");
-            setParametersForEmployee(employee, selectStatement);
-            selectStatement.executeUpdate();
-            selectStatement.close();
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    public void updateEmployee(Employee employee, Integer id){
+        String query="UPDATE employee SET  first_name = ?, last_name = ?, department_id = ?, job_title = ?, gender = ?, date_of_birth = ? WHERE employee_id = ?";
+        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+            @Override
+            public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
+                setParametersForEmployee(employee, ps);
+                ps.setInt(7,employee.getEmployeeId());
+                return ps.execute();
+            }
+        });
+        System.out.println("Data updated Successfully");
     }
 
 
@@ -179,7 +161,6 @@ public class EmployeeDao {
         selectStatement.setString(4, employee.getJobTitle());
         selectStatement.setString(5, stringGender);
         selectStatement.setDate(6, java.sql.Date.valueOf(employee.getDateOfBirth()));
-        selectStatement.setInt(7, employee.getEmployeeId());
     }
 }
 

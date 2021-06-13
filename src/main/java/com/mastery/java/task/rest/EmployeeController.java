@@ -1,6 +1,6 @@
 package com.mastery.java.task.rest;
 
-import com.mastery.java.task.dao.EmployeeDao;
+
 import com.mastery.java.task.dto.Employee;
 import com.mastery.java.task.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,22 +20,24 @@ public class EmployeeController {
         return employeeService.findById(id);
     }
 
+
     @GetMapping()
     public List<Employee> findAll (){return  employeeService.findAll();}
+
 
     @GetMapping("/department/{departmentId}")
     public List<Employee> findByDepartmentId(@PathVariable Integer departmentId) {
         return employeeService.findByDepartmentId(departmentId);
     }
 
-    @GetMapping("/lastname/{lastname}")
-    public Employee findByLastname (@PathVariable String lastname){return employeeService.findByLastname(lastname);}
 
     @DeleteMapping("/{id}")
     public void deleteEmployee (@PathVariable Integer id){employeeService.deleteEmployee(id);}
 
+
     @PostMapping()
     public void newEmployee (@RequestBody Employee newEmployee){ employeeService.newEmployee(newEmployee);}
+
 
     @PutMapping("/{id}")
     public void updateEmployee (@RequestBody Employee updatedEmployee, @PathVariable Integer id){
