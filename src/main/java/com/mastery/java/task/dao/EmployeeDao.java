@@ -1,5 +1,6 @@
 package com.mastery.java.task.dao;
 
+import com.mastery.java.task.config.DataBaseHandler;
 import com.mastery.java.task.dto.Employee;
 import com.mastery.java.task.dto.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,37 @@ public class EmployeeDao {
     @Autowired
     JdbcTemplate jdbc;
 
+//    private DataBaseHandler dataBaseHandler = new DataBaseHandler();
+//
+//    public Employee findById (Integer id) {
+//        try (Connection connection = dataBaseHandler.getDbCon()) {
+//            PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM employee WHERE employee_id = ?");
+//            selectStatement.setInt(1, id);
+//            ResultSet resultSet = selectStatement.executeQuery();
+//            Employee employee = null;
+//            while (resultSet.next()){
+//                Integer employee_id = resultSet.getInt(1);
+//                String first_name = resultSet.getString(2);
+//                String last_name = resultSet.getString(3);
+//                Integer department_id = resultSet.getInt(4);
+//                String job_title = resultSet.getString(5);
+//                String gender = resultSet.getString(6);
+//                Gender genderEnum = null;
+//                if (gender.equals("Male")){
+//                    genderEnum = MALE;
+//                } else if(gender.equals("Female")){
+//                    genderEnum = FEMALE;
+//                }
+//                LocalDate date_of_birth = resultSet.getDate(7).toLocalDate();
+//
+//                employee = new Employee(employee_id, first_name, last_name, department_id, job_title, genderEnum, date_of_birth);
+//            }
+//            return employee;
+//        }catch (SQLException | ClassNotFoundException e){
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     public Employee findById(Integer id){
         String query="SELECT * FROM employee WHERE employee_id = ?";
@@ -38,7 +70,7 @@ public class EmployeeDao {
                 while (resultSet.next()) {
                     employee[0] = getResultEmployee(resultSet);
                 }
-                return  null;
+                return null;
             }
         });
         return employee[0];
@@ -56,7 +88,7 @@ public class EmployeeDao {
                 while (resultSet.next()) {
                     list.add(getResultEmployee(resultSet));
                 }
-                return  null;
+                return ps.execute();
             }
         });
         return list;
@@ -75,7 +107,7 @@ public class EmployeeDao {
                 while (resultSet.next()) {
                    list.add(getResultEmployee(resultSet));
                 }
-                return  null;
+                return ps.execute();
             }
         });
         return list;

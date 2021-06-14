@@ -16,8 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(EmployeeController.class)
@@ -79,7 +78,8 @@ public class EmployeeControllerTest {
     @Test
     public void updateEmployee() throws Exception{
         Employee employee1 = new Employee(1, "Artem", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991,12,1));
-        doNothing().when(employeeService).newEmployee(employee1);
+        when(employeeService.findById(1)).thenReturn(employee1);
+        doNothing().when(employeeService).updateEmployee(employee1,1);
         MockHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.put("/employee/1")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
