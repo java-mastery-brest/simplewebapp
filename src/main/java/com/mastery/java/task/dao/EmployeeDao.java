@@ -1,6 +1,5 @@
 package com.mastery.java.task.dao;
 
-import com.mastery.java.task.config.DataBaseHandler;
 import com.mastery.java.task.dto.Employee;
 import com.mastery.java.task.dto.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,42 +25,10 @@ public class EmployeeDao {
     @Autowired
     JdbcTemplate jdbc;
 
-//    private DataBaseHandler dataBaseHandler = new DataBaseHandler();
-//
-//    public Employee findById (Integer id) {
-//        try (Connection connection = dataBaseHandler.getDbCon()) {
-//            PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM employee WHERE employee_id = ?");
-//            selectStatement.setInt(1, id);
-//            ResultSet resultSet = selectStatement.executeQuery();
-//            Employee employee = null;
-//            while (resultSet.next()){
-//                Integer employee_id = resultSet.getInt(1);
-//                String first_name = resultSet.getString(2);
-//                String last_name = resultSet.getString(3);
-//                Integer department_id = resultSet.getInt(4);
-//                String job_title = resultSet.getString(5);
-//                String gender = resultSet.getString(6);
-//                Gender genderEnum = null;
-//                if (gender.equals("Male")){
-//                    genderEnum = MALE;
-//                } else if(gender.equals("Female")){
-//                    genderEnum = FEMALE;
-//                }
-//                LocalDate date_of_birth = resultSet.getDate(7).toLocalDate();
-//
-//                employee = new Employee(employee_id, first_name, last_name, department_id, job_title, genderEnum, date_of_birth);
-//            }
-//            return employee;
-//        }catch (SQLException | ClassNotFoundException e){
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
-    public Employee findById(Integer id){
-        String query="SELECT * FROM employee WHERE employee_id = ?";
+    public Employee findById(Integer id) {
+        String query = "SELECT * FROM employee WHERE employee_id = ?";
         final Employee[] employee = new Employee[1];
-        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+        jdbc.execute(query, new PreparedStatementCallback<Boolean>() {
             @Override
             public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 ps.setInt(1, id);
@@ -77,10 +43,10 @@ public class EmployeeDao {
     }
 
 
-    public List<Employee> findAll(){
-        String query="SELECT * FROM employee ";
+    public List<Employee> findAll() {
+        String query = "SELECT * FROM employee ";
         List<Employee> list = new ArrayList<>();
-        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+        jdbc.execute(query, new PreparedStatementCallback<Boolean>() {
             @Override
             public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 ResultSet resultSet = ps.executeQuery();
@@ -95,17 +61,17 @@ public class EmployeeDao {
     }
 
 
-    public List<Employee> findByDepartmentId(Integer departmentId){
-        String query="SELECT * FROM employee WHERE department_id = ?";
+    public List<Employee> findByDepartmentId(Integer departmentId) {
+        String query = "SELECT * FROM employee WHERE department_id = ?";
         List<Employee> list = new ArrayList<>();
-        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+        jdbc.execute(query, new PreparedStatementCallback<Boolean>() {
             @Override
             public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 ps.setInt(1, departmentId);
                 ResultSet resultSet = ps.executeQuery();
                 Employee employee = null;
                 while (resultSet.next()) {
-                   list.add(getResultEmployee(resultSet));
+                    list.add(getResultEmployee(resultSet));
                 }
                 return ps.execute();
             }
@@ -114,9 +80,9 @@ public class EmployeeDao {
     }
 
 
-    public void deleteEmployee (Integer id){
-        String query= "DELETE FROM employee WHERE employee_id = ?";
-        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+    public void deleteEmployee(Integer id) {
+        String query = "DELETE FROM employee WHERE employee_id = ?";
+        jdbc.execute(query, new PreparedStatementCallback<Boolean>() {
             @Override
             public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 ps.setInt(1, id);
@@ -127,9 +93,9 @@ public class EmployeeDao {
     }
 
 
-    public void newEmployee(Employee newEmployee){
-        String query="INSERT INTO employee ( first_name, last_name, department_id, job_title, gender, date_of_birth) VALUES ( ?, ?, ?, ?, ?, ?)";
-        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+    public void newEmployee(Employee newEmployee) {
+        String query = "INSERT INTO employee ( first_name, last_name, department_id, job_title, gender, date_of_birth) VALUES ( ?, ?, ?, ?, ?, ?)";
+        jdbc.execute(query, new PreparedStatementCallback<Boolean>() {
             @Override
             public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 setParametersForEmployee(newEmployee, ps);
@@ -141,21 +107,18 @@ public class EmployeeDao {
     }
 
 
-    public void updateEmployee(Employee employee, Integer id){
-        String query="UPDATE employee SET  first_name = ?, last_name = ?, department_id = ?, job_title = ?, gender = ?, date_of_birth = ? WHERE employee_id = ?";
-        jdbc.execute(query,new PreparedStatementCallback<Boolean>(){
+    public void updateEmployee(Employee employee, Integer id) {
+        String query = "UPDATE employee SET  first_name = ?, last_name = ?, department_id = ?, job_title = ?, gender = ?, date_of_birth = ? WHERE employee_id = ?";
+        jdbc.execute(query, new PreparedStatementCallback<Boolean>() {
             @Override
             public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException {
                 setParametersForEmployee(employee, ps);
-                ps.setInt(7,employee.getEmployeeId());
+                ps.setInt(7, employee.getEmployeeId());
                 return ps.execute();
             }
         });
         System.out.println("Data updated Successfully");
     }
-
-
-//-----------------------local methods-----------------------------------
 
 
     private Employee getResultEmployee(ResultSet resultSet) throws SQLException {
@@ -182,9 +145,9 @@ public class EmployeeDao {
     private void setParametersForEmployee(Employee employee, PreparedStatement selectStatement) throws SQLException {
         Gender genderEnum = employee.getGender();
         String stringGender = "";
-        if (genderEnum == MALE){
+        if (genderEnum == MALE) {
             stringGender = "Male";
-        } else if( genderEnum == FEMALE){
+        } else if (genderEnum == FEMALE) {
             stringGender = "Female";
         }
         selectStatement.setString(1, employee.getFirstName());

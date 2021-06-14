@@ -1,7 +1,5 @@
 package com.mastery.java.task.dto;
 
-import org.apache.tomcat.jni.Local;
-
 import java.time.LocalDate;
 
 public class Employee {

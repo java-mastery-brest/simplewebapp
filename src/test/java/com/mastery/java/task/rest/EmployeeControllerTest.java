@@ -16,7 +16,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(EmployeeController.class)
@@ -31,14 +32,14 @@ public class EmployeeControllerTest {
 
     @Test
     public void findById() throws Exception {
-        Employee employee1 = new Employee(1, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991,12,1));
+        Employee employee1 = new Employee(1, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991, 12, 1));
         when(employeeService.findById(1)).thenReturn(employee1);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/employee/1")).andExpect(status().isOk());
     }
 
     @Test
-    public void findAll() throws Exception{
-        Employee employee1 = new Employee(1, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991,12,1));
+    public void findAll() throws Exception {
+        Employee employee1 = new Employee(1, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991, 12, 1));
         List<Employee> list = new ArrayList<>();
         list.add(employee1);
         when(employeeService.findAll()).thenReturn(list);
@@ -46,8 +47,8 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void findByDepartmentId() throws Exception{
-        Employee employee1 = new Employee(1, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991,12,1));
+    public void findByDepartmentId() throws Exception {
+        Employee employee1 = new Employee(1, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991, 12, 1));
         List<Employee> list = new ArrayList<>();
         list.add(employee1);
         when(employeeService.findByDepartmentId(1)).thenReturn(list);
@@ -58,13 +59,13 @@ public class EmployeeControllerTest {
     @Test
     public void deleteEmployee() throws Exception {
         doNothing().when(employeeService).deleteEmployee(1);
-        this.mockMvc.perform(MockMvcRequestBuilders.delete("/employee/1" ))
+        this.mockMvc.perform(MockMvcRequestBuilders.delete("/employee/1"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void newEmployee() throws Exception{
-        Employee employee1 = new Employee(5, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991,12,1));
+    public void newEmployee() throws Exception {
+        Employee employee1 = new Employee(5, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991, 12, 1));
         doNothing().when(employeeService).newEmployee(employee1);
         MockHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.post("/employee")
@@ -76,10 +77,10 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void updateEmployee() throws Exception{
-        Employee employee1 = new Employee(1, "Artem", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991,12,1));
+    public void updateEmployee() throws Exception {
+        Employee employee1 = new Employee(1, "Artem", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991, 12, 1));
         when(employeeService.findById(1)).thenReturn(employee1);
-        doNothing().when(employeeService).updateEmployee(employee1,1);
+        doNothing().when(employeeService).updateEmployee(employee1, 1);
         MockHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.put("/employee/1")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -91,13 +92,13 @@ public class EmployeeControllerTest {
     }
 
 
-    public String getEmployeeToJson (Employee employee){
+    public String getEmployeeToJson(Employee employee) {
         return "{\"firstName\":\"" + employee.getFirstName() +
                 "\", \"lastName\":\"" + employee.getLastName() +
                 "\", \"departmentId\":\"" + employee.getDepartmentId() +
                 "\", \"jobTitle\":\"" + employee.getJobTitle() +
                 "\", \"gender\":\"" + employee.getGender() +
-                "\", \"dateOfBirth\":\"" + employee.getDateOfBirth()+
+                "\", \"dateOfBirth\":\"" + employee.getDateOfBirth() +
                 "\"}";
     }
 }

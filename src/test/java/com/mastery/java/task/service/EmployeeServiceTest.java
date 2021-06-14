@@ -23,9 +23,10 @@ public class EmployeeServiceTest {
     EmployeeDao employeeDao;
 
 
-    @Before public void initMocks() {
-           MockitoAnnotations.openMocks(this);
-       }
+    @Before
+    public void initMocks() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     public void findById() {
@@ -58,14 +59,14 @@ public class EmployeeServiceTest {
 
     @Test
     public void newEmployee() {
-        Employee employee1 = new Employee(5, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991,12,1));
+        Employee employee1 = new Employee(5, "Ivan", "Ivanov", 1, "line manager", Gender.MALE, LocalDate.of(1991, 12, 1));
         employeeService.newEmployee(employee1);
         verify(employeeDao).newEmployee(employee1);
     }
 
     @Test
     public void updateEmployee() {
-        Employee employee1 = new Employee(5, "Ivan", "Petrov", 1, "line manager", Gender.MALE, LocalDate.of(1991,12,1));
+        Employee employee1 = new Employee(5, "Ivan", "Petrov", 1, "line manager", Gender.MALE, LocalDate.of(1991, 12, 1));
         employeeService.newEmployee(employee1);
         verify(employeeDao).newEmployee(employee1);
     }

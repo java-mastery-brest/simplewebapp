@@ -22,7 +22,9 @@ public class EmployeeController {
 
 
     @GetMapping()
-    public List<Employee> findAll (){return  employeeService.findAll();}
+    public List<Employee> findAll() {
+        return employeeService.findAll();
+    }
 
 
     @GetMapping("/department/{departmentId}")
@@ -32,15 +34,19 @@ public class EmployeeController {
 
 
     @DeleteMapping("/{id}")
-    public void deleteEmployee (@PathVariable Integer id){employeeService.deleteEmployee(id);}
+    public void deleteEmployee(@PathVariable Integer id) {
+        employeeService.deleteEmployee(id);
+    }
 
 
     @PostMapping()
-    public void newEmployee (@RequestBody Employee newEmployee){ employeeService.newEmployee(newEmployee);}
+    public void newEmployee(@RequestBody Employee newEmployee) {
+        employeeService.newEmployee(newEmployee);
+    }
 
 
     @PutMapping("/{id}")
-    public void updateEmployee (@RequestBody Employee updatedEmployee, @PathVariable Integer id){
+    public void updateEmployee(@RequestBody Employee updatedEmployee, @PathVariable Integer id) {
         Employee employee = employeeService.findById(id);
         employee.setDepartmentId(updatedEmployee.getDepartmentId());
         employee.setJobTitle(updatedEmployee.getJobTitle());
