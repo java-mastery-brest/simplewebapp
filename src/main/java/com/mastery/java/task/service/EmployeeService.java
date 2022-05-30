@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
@@ -18,8 +19,23 @@ public class EmployeeService {
     }
 
     public List<Employee> getEmployees(){
-        //TODO: return employees list from employeeDao
         return employeeDao.getEmployees();
+    }
+
+    public Optional<Employee> getEmployee(Long id){
+        return employeeDao.getEmployee(id);
+    }
+
+    public void deleteEmployee(Long id){
+        employeeDao.deleteEmployee(id);
+    }
+
+    public void updateEmployee(Employee employee, Long id){
+        employeeDao.updateEmployee(employee, id);
+    }
+
+    public void insertEmployee(Employee employee){
+        employeeDao.insertEmployee(employee);
     }
 
 }
