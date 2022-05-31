@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="simplewebapp" options="--add-modules java.base,java.sql" />
+      <module name="simplewebapp" options="--add-modules java.sql,java.base" />
     </option>
   </component>
 </project>
